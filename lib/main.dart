@@ -21,7 +21,7 @@ class TaskAIApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
 
     return MaterialApp.router(
-      title: 'TaskAI v1.0',
+      title: 'TaskAI v2.0',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

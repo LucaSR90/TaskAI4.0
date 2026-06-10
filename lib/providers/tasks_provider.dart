@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/task.dart';
@@ -16,7 +18,6 @@ enum TaskCompletionFilter { all, pending, completed }
 
 final _uuid = Uuid();
 
-/// Datos alineados con el mockup (3 pendientes hoy, 1 completada).
 List<Task> _initialTasks() {
   final now = DateTime.now();
   final today = DateTime(now.year, now.month, now.day, 14);
@@ -59,10 +60,44 @@ List<Task> _initialTasks() {
 }
 
 class TasksNotifier extends StateNotifier<List<Task>> {
-  TasksNotifier() : super(_initialTasks());
+  TasksNotifier() : super([]) {
+    _init();
+  }
+
+  static const _storageKey = 'tasks_list_v2';
+
+  Future<void> _init() async {
+    await _loadTasks();
+  }
+
+  Future<void> _loadTasks() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? tasksJson = prefs.getString(_storageKey);
+
+      if (tasksJson != null) {
+        final List<dynamic> decoded = jsonDecode(tasksJson);
+        state = decoded.map((item) => Task.fromJson(item)).toList();
+      } else {
+        // Primera vez, cargar iniciales y guardar
+        state = _initialTasks();
+        await _saveTasks();
+      }
+    } catch (e) {
+      // En caso de error, cargar iniciales para no dejar la app vacía
+      state = _initialTasks();
+    }
+  }
+
+  Future<void> _saveTasks() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String encoded = jsonEncode(state.map((task) => task.toJson()).toList());
+    await prefs.setString(_storageKey, encoded);
+  }
 
   void addTask(Task task) {
     state = [...state, task];
+    _saveTasks();
   }
 
   void updateTask(Task task) {
@@ -70,10 +105,12 @@ class TasksNotifier extends StateNotifier<List<Task>> {
       for (final t in state)
         if (t.id == task.id) task else t,
     ];
+    _saveTasks();
   }
 
   void deleteTask(String id) {
     state = state.where((t) => t.id != id).toList();
+    _saveTasks();
   }
 
   void toggleCompleted(String id) {
@@ -81,6 +118,7 @@ class TasksNotifier extends StateNotifier<List<Task>> {
       for (final t in state)
         if (t.id == id) t.copyWith(isCompleted: !t.isCompleted) else t,
     ];
+    _saveTasks();
   }
 
   Task? getById(String id) {

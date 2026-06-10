@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../models/task.dart';
 import '../models/task_category.dart';
 import '../models/task_priority.dart';
+import '../providers/scan_draft_provider.dart';
 import '../providers/tasks_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -44,7 +45,24 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
     super.initState();
     if (_isEditing) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _loadTask());
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _applyPendingScanDraft());
     }
+  }
+
+  Future<void> _applyPendingScanDraft() async {
+    final draft = ref.read(pendingScanDraftProvider) ??
+        await ref.read(scanDraftStorageProvider).read();
+
+    if (draft == null || !draft.isValid) return;
+
+    setState(() {
+      _titleController.text = draft.title;
+      _descriptionController.text = draft.description;
+    });
+
+    ref.read(pendingScanDraftProvider.notifier).state = null;
+    await ref.read(scanDraftStorageProvider).clear();
   }
 
   void _loadTask() {
@@ -168,6 +186,17 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
         ),
         title: Text(_isEditing ? 'Editar tarea' : 'Nueva tarea'),
         actions: [
+          if (!_isEditing)
+            IconButton(
+              tooltip: 'Escanear tarea',
+              icon: const Icon(Icons.document_scanner_outlined),
+              onPressed: () async {
+                final imported = await context.push<bool>('/scan');
+                if (imported == true && mounted) {
+                  await _applyPendingScanDraft();
+                }
+              },
+            ),
           TextButton(
             onPressed: _save,
             child: const Text(

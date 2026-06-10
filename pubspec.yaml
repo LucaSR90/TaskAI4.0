@@ -1,7 +1,7 @@
 name: taskai
-description: TaskAI v1.0 - Gestión de tareas con UI Material Design 3
+description: TaskAI v2.0 - Gestión de tareas con IA on-device (ML Kit)
 publish_to: 'none'
-version: 1.0.0+1
+version: 2.0.0+2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -13,6 +13,12 @@ dependencies:
   go_router: ^14.6.2
   intl: ^0.19.0
   uuid: ^4.5.1
+  google_mlkit_text_recognition: ^0.14.0
+  google_mlkit_barcode_scanning: ^0.13.0
+  camera: ^0.11.1
+  flutter_secure_storage: ^9.2.4
+  permission_handler: ^11.4.0
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:

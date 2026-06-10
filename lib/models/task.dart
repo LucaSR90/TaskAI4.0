@@ -39,4 +39,24 @@ class Task {
       isCompleted: isCompleted ?? this.isCompleted,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'description': description,
+        'category': category.name,
+        'priority': priority.name,
+        'dueDate': dueDate.toIso8601String(),
+        'isCompleted': isCompleted,
+      };
+
+  factory Task.fromJson(Map<String, dynamic> json) => Task(
+        id: json['id'],
+        title: json['title'],
+        description: json['description'],
+        category: TaskCategory.values.byName(json['category']),
+        priority: TaskPriority.values.byName(json['priority']),
+        dueDate: DateTime.parse(json['dueDate']),
+        isCompleted: json['isCompleted'],
+      );
 }

@@ -116,18 +116,18 @@ class ProfileScreen extends ConsumerWidget {
             title: 'Notificaciones',
             value: notifications,
             onChanged: (v) =>
-                ref.read(notificationsEnabledProvider.notifier).state = v,
+                ref.read(notificationsEnabledProvider.notifier).set(v),
           ),
           _SettingsTile(
             title: 'Modo oscuro',
             value: isDark,
-            onChanged: (v) => ref.read(isDarkModeProvider.notifier).state = v,
+            onChanged: (v) => ref.read(isDarkModeProvider.notifier).setTheme(v),
           ),
           _SettingsTile(
             title: 'IA Agéntica',
             value: agenticAi,
             onChanged: (v) =>
-                ref.read(agenticAiEnabledProvider.notifier).state = v,
+                ref.read(agenticAiEnabledProvider.notifier).set(v),
           ),
         ],
       ),

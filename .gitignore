@@ -17,6 +17,10 @@ migrate_working_dir/
 *.ipr
 *.iws
 .idea/
+.vs/
+
+# Local Flutter SDK clone (do not commit)
+/flutter/
 
 # Flutter/Dart/Pub related
 **/doc/api/

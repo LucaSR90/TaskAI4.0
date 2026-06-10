@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../screens/home_screen.dart';
 import '../screens/profile_screen.dart';
+import '../screens/scan_screen.dart';
 import '../screens/task_detail_screen.dart';
 import '../screens/voice_screen.dart';
 import '../widgets/app_shell.dart';
@@ -74,6 +75,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         parentNavigatorKey: _rootNavigatorKey,
         path: '/task/new',
         builder: (context, state) => const TaskDetailScreen(),
+      ),
+      GoRoute(
+        parentNavigatorKey: _rootNavigatorKey,
+        path: '/scan',
+        builder: (context, state) => const ScanScreen(),
       ),
     ],
   );
