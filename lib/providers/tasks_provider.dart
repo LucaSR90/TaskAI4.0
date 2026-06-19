@@ -16,7 +16,7 @@ enum TaskListFilter {
 
 enum TaskCompletionFilter { all, pending, completed }
 
-final _uuid = Uuid();
+const _uuid = Uuid();
 
 List<Task> _initialTasks() {
   final now = DateTime.now();
