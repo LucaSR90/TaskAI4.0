@@ -1,4 +1,4 @@
-# TaskAI v1.0
+# TaskAI v4.0
 
 Aplicación Flutter de gestión de tareas con Material Design 3, Riverpod y go_router.
 
